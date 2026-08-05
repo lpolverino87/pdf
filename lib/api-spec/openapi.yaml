@@ -3,20 +3,30 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Modulistica Comuni - API per onoranze funebri
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: comuni
+    description: Comuni italiani
+  - name: crematori
+    description: Crematori
+  - name: nazioni
+    description: Nazioni estere
+  - name: moduli
+    description: Moduli e documenti
+  - name: dashboard
+    description: Statistiche dashboard
+
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,13 +34,649 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /comuni:
+    get:
+      operationId: listComuni
+      tags: [comuni]
+      summary: Lista comuni
+      parameters:
+        - name: search
+          in: query
+          schema: { type: string }
+        - name: provincia
+          in: query
+          schema: { type: string }
+      responses:
+        "200":
+          description: Lista comuni
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Comune"
+    post:
+      operationId: createComune
+      tags: [comuni]
+      summary: Crea comune
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ComuneInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Comune"
+
+  /comuni/{id}:
+    get:
+      operationId: getComune
+      tags: [comuni]
+      summary: Dettaglio comune
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: number }
+      responses:
+        "200":
+          description: Comune
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Comune"
+        "404":
+          description: Non trovato
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      operationId: updateComune
+      tags: [comuni]
+      summary: Aggiorna comune
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: number }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ComuneUpdate"
+      responses:
+        "200":
+          description: Aggiornato
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Comune"
+        "404":
+          description: Non trovato
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      operationId: deleteComune
+      tags: [comuni]
+      summary: Elimina comune
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: number }
+      responses:
+        "204":
+          description: Eliminato
+
+  /crematori:
+    get:
+      operationId: listCrematori
+      tags: [crematori]
+      summary: Lista crematori
+      parameters:
+        - name: search
+          in: query
+          schema: { type: string }
+      responses:
+        "200":
+          description: Lista crematori
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Crematorio"
+    post:
+      operationId: createCrematorio
+      tags: [crematori]
+      summary: Crea crematorio
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CrematorioInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Crematorio"
+
+  /crematori/{id}:
+    get:
+      operationId: getCrematorio
+      tags: [crematori]
+      summary: Dettaglio crematorio
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: number }
+      responses:
+        "200":
+          description: Crematorio
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Crematorio"
+        "404":
+          description: Non trovato
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      operationId: updateCrematorio
+      tags: [crematori]
+      summary: Aggiorna crematorio
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: number }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CrematorioUpdate"
+      responses:
+        "200":
+          description: Aggiornato
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Crematorio"
+        "404":
+          description: Non trovato
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      operationId: deleteCrematorio
+      tags: [crematori]
+      summary: Elimina crematorio
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: number }
+      responses:
+        "204":
+          description: Eliminato
+
+  /nazioni:
+    get:
+      operationId: listNazioni
+      tags: [nazioni]
+      summary: Lista nazioni
+      parameters:
+        - name: search
+          in: query
+          schema: { type: string }
+      responses:
+        "200":
+          description: Lista nazioni
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Nazione"
+    post:
+      operationId: createNazione
+      tags: [nazioni]
+      summary: Crea nazione
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NazioneInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Nazione"
+
+  /nazioni/{id}:
+    get:
+      operationId: getNazione
+      tags: [nazioni]
+      summary: Dettaglio nazione
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: number }
+      responses:
+        "200":
+          description: Nazione
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Nazione"
+        "404":
+          description: Non trovato
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      operationId: updateNazione
+      tags: [nazioni]
+      summary: Aggiorna nazione
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: number }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NazioneUpdate"
+      responses:
+        "200":
+          description: Aggiornato
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Nazione"
+        "404":
+          description: Non trovato
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      operationId: deleteNazione
+      tags: [nazioni]
+      summary: Elimina nazione
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: number }
+      responses:
+        "204":
+          description: Eliminato
+
+  /moduli:
+    get:
+      operationId: listModuli
+      tags: [moduli]
+      summary: Lista moduli
+      parameters:
+        - name: entityType
+          in: query
+          schema:
+            type: string
+            enum: [comune, crematorio, nazione]
+        - name: entityId
+          in: query
+          schema: { type: number }
+      responses:
+        "200":
+          description: Lista moduli
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Modulo"
+    post:
+      operationId: createModulo
+      tags: [moduli]
+      summary: Crea modulo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ModuloInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Modulo"
+
+  /moduli/{id}:
+    get:
+      operationId: getModulo
+      tags: [moduli]
+      summary: Dettaglio modulo
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: number }
+      responses:
+        "200":
+          description: Modulo
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Modulo"
+        "404":
+          description: Non trovato
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      operationId: updateModulo
+      tags: [moduli]
+      summary: Aggiorna modulo
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: number }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ModuloUpdate"
+      responses:
+        "200":
+          description: Aggiornato
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Modulo"
+        "404":
+          description: Non trovato
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      operationId: deleteModulo
+      tags: [moduli]
+      summary: Elimina modulo
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: number }
+      responses:
+        "204":
+          description: Eliminato
+
+  /dashboard/stats:
+    get:
+      operationId: getDashboardStats
+      tags: [dashboard]
+      summary: Statistiche dashboard
+      responses:
+        "200":
+          description: Statistiche
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardStats"
+
 components:
   schemas:
     HealthStatus:
       type: object
+      required: [status]
       properties:
         status:
           type: string
-      required:
-        - status
 
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
+
+    Comune:
+      type: object
+      required: [id, nome, createdAt, updatedAt]
+      properties:
+        id: { type: number }
+        nome: { type: string }
+        provincia: { type: ["string", "null"] }
+        orariApertura: { type: ["string", "null"] }
+        necroscopica: { type: ["string", "null"] }
+        anagrafeStatoCivile: { type: ["string", "null"] }
+        poliziaMoreuaria: { type: ["string", "null"] }
+        cimiteri: { type: ["string", "null"] }
+        necroforo: { type: ["string", "null"] }
+        impresaIncaricataTumulazione: { type: ["string", "null"] }
+        tumulazioneCapellaPrivata: { type: ["string", "null"] }
+        lapide: { type: ["string", "null"] }
+        affissioni: { type: ["string", "null"] }
+        luoghiDispersione: { type: ["string", "null"] }
+        listinoDiTumulazione: { type: ["string", "null"] }
+        appuntamentoAttoMorte: { type: ["string", "null"] }
+        moduli: { type: ["string", "null"] }
+        noteCostiPagamento: { type: ["string", "null"] }
+        createdAt: { type: string }
+        updatedAt: { type: string }
+
+    ComuneInput:
+      type: object
+      required: [nome]
+      properties:
+        nome: { type: string, minLength: 1 }
+        provincia: { type: string }
+        orariApertura: { type: string }
+        necroscopica: { type: string }
+        anagrafeStatoCivile: { type: string }
+        poliziaMoreuaria: { type: string }
+        cimiteri: { type: string }
+        necroforo: { type: string }
+        impresaIncaricataTumulazione: { type: string }
+        tumulazioneCapellaPrivata: { type: string }
+        lapide: { type: string }
+        affissioni: { type: string }
+        luoghiDispersione: { type: string }
+        listinoDiTumulazione: { type: string }
+        appuntamentoAttoMorte: { type: string }
+        moduli: { type: string }
+        noteCostiPagamento: { type: string }
+
+    ComuneUpdate:
+      type: object
+      properties:
+        nome: { type: string, minLength: 1 }
+        provincia: { type: string }
+        orariApertura: { type: string }
+        necroscopica: { type: string }
+        anagrafeStatoCivile: { type: string }
+        poliziaMoreuaria: { type: string }
+        cimiteri: { type: string }
+        necroforo: { type: string }
+        impresaIncaricataTumulazione: { type: string }
+        tumulazioneCapellaPrivata: { type: string }
+        lapide: { type: string }
+        affissioni: { type: string }
+        luoghiDispersione: { type: string }
+        listinoDiTumulazione: { type: string }
+        appuntamentoAttoMorte: { type: string }
+        moduli: { type: string }
+        noteCostiPagamento: { type: string }
+
+    Crematorio:
+      type: object
+      required: [id, nome, createdAt, updatedAt]
+      properties:
+        id: { type: number }
+        nome: { type: string }
+        citta: { type: ["string", "null"] }
+        provincia: { type: ["string", "null"] }
+        indirizzo: { type: ["string", "null"] }
+        telefono: { type: ["string", "null"] }
+        email: { type: ["string", "null"] }
+        orariApertura: { type: ["string", "null"] }
+        referente: { type: ["string", "null"] }
+        costiCremazione: { type: ["string", "null"] }
+        modalitaPrenotazione: { type: ["string", "null"] }
+        documentiRichiesti: { type: ["string", "null"] }
+        note: { type: ["string", "null"] }
+        createdAt: { type: string }
+        updatedAt: { type: string }
+
+    CrematorioInput:
+      type: object
+      required: [nome]
+      properties:
+        nome: { type: string, minLength: 1 }
+        citta: { type: string }
+        provincia: { type: string }
+        indirizzo: { type: string }
+        telefono: { type: string }
+        email: { type: string }
+        orariApertura: { type: string }
+        referente: { type: string }
+        costiCremazione: { type: string }
+        modalitaPrenotazione: { type: string }
+        documentiRichiesti: { type: string }
+        note: { type: string }
+
+    CrematorioUpdate:
+      type: object
+      properties:
+        nome: { type: string, minLength: 1 }
+        citta: { type: string }
+        provincia: { type: string }
+        indirizzo: { type: string }
+        telefono: { type: string }
+        email: { type: string }
+        orariApertura: { type: string }
+        referente: { type: string }
+        costiCremazione: { type: string }
+        modalitaPrenotazione: { type: string }
+        documentiRichiesti: { type: string }
+        note: { type: string }
+
+    Nazione:
+      type: object
+      required: [id, nome, createdAt, updatedAt]
+      properties:
+        id: { type: number }
+        nome: { type: string }
+        consolato: { type: ["string", "null"] }
+        ambasciata: { type: ["string", "null"] }
+        telefono: { type: ["string", "null"] }
+        email: { type: ["string", "null"] }
+        documentiRichiesti: { type: ["string", "null"] }
+        procedureRimpatrio: { type: ["string", "null"] }
+        costiOrienttativi: { type: ["string", "null"] }
+        note: { type: ["string", "null"] }
+        createdAt: { type: string }
+        updatedAt: { type: string }
+
+    NazioneInput:
+      type: object
+      required: [nome]
+      properties:
+        nome: { type: string, minLength: 1 }
+        consolato: { type: string }
+        ambasciata: { type: string }
+        telefono: { type: string }
+        email: { type: string }
+        documentiRichiesti: { type: string }
+        procedureRimpatrio: { type: string }
+        costiOrienttativi: { type: string }
+        note: { type: string }
+
+    NazioneUpdate:
+      type: object
+      properties:
+        nome: { type: string, minLength: 1 }
+        consolato: { type: string }
+        ambasciata: { type: string }
+        telefono: { type: string }
+        email: { type: string }
+        documentiRichiesti: { type: string }
+        procedureRimpatrio: { type: string }
+        costiOrienttativi: { type: string }
+        note: { type: string }
+
+    Modulo:
+      type: object
+      required: [id, nome, entityType, createdAt, updatedAt]
+      properties:
+        id: { type: number }
+        nome: { type: string }
+        descrizione: { type: ["string", "null"] }
+        entityType: { type: string, enum: [comune, crematorio, nazione, generale] }
+        entityId: { type: ["number", "null"] }
+        url: { type: ["string", "null"] }
+        note: { type: ["string", "null"] }
+        createdAt: { type: string }
+        updatedAt: { type: string }
+
+    ModuloInput:
+      type: object
+      required: [nome, entityType]
+      properties:
+        nome: { type: string, minLength: 1 }
+        descrizione: { type: string }
+        entityType: { type: string, enum: [comune, crematorio, nazione, generale] }
+        entityId: { type: number }
+        url: { type: string }
+        note: { type: string }
+
+    ModuloUpdate:
+      type: object
+      properties:
+        nome: { type: string, minLength: 1 }
+        descrizione: { type: string }
+        entityType: { type: string, enum: [comune, crematorio, nazione, generale] }
+        entityId: { type: number }
+        url: { type: string }
+        note: { type: string }
+
+    DashboardStats:
+      type: object
+      required: [totalComuni, totalCrematori, totalNazioni, totalModuli]
+      properties:
+        totalComuni: { type: number }
+        totalCrematori: { type: number }
+        totalNazioni: { type: number }
+        totalModuli: { type: number }

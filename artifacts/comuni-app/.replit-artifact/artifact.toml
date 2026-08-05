@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Modulistica Comuni"
+description = "App interna per onoranze funebri per gestire informazioni su comuni, crematori e nazioni. Permette di cercare rapidamente numeri di telefono, contatti, cimiteri, costi di tumulazione e moduli da compilare e stampare per ogni comune."
+version = "1.0.0"
+id = "artifacts/comuni-app"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 26267
+
+[services.development]
+run = "pnpm --filter @workspace/comuni-app run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/comuni-app", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/comuni-app/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "26267"
+BASE_PATH = "/"
