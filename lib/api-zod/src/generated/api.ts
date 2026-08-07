@@ -43,8 +43,8 @@ export const ListComuniResponseItem = zod.object({
   "appuntamentoAttoMorte": zod.string().nullish(),
   "moduli": zod.string().nullish(),
   "noteCostiPagamento": zod.string().nullish(),
-  "createdAt": zod.string(),
-  "updatedAt": zod.string()
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
 })
 export const ListComuniResponse = zod.array(ListComuniResponseItem)
 
@@ -94,8 +94,8 @@ export const CreateComuneResponse = zod.object({
   "appuntamentoAttoMorte": zod.string().nullish(),
   "moduli": zod.string().nullish(),
   "noteCostiPagamento": zod.string().nullish(),
-  "createdAt": zod.string(),
-  "updatedAt": zod.string()
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
 })
 
 
@@ -125,8 +125,8 @@ export const GetComuneResponse = zod.object({
   "appuntamentoAttoMorte": zod.string().nullish(),
   "moduli": zod.string().nullish(),
   "noteCostiPagamento": zod.string().nullish(),
-  "createdAt": zod.string(),
-  "updatedAt": zod.string()
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
 })
 
 
@@ -179,8 +179,8 @@ export const UpdateComuneResponse = zod.object({
   "appuntamentoAttoMorte": zod.string().nullish(),
   "moduli": zod.string().nullish(),
   "noteCostiPagamento": zod.string().nullish(),
-  "createdAt": zod.string(),
-  "updatedAt": zod.string()
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
 })
 
 
@@ -215,8 +215,8 @@ export const ListCrematoriResponseItem = zod.object({
   "modalitaPrenotazione": zod.string().nullish(),
   "documentiRichiesti": zod.string().nullish(),
   "note": zod.string().nullish(),
-  "createdAt": zod.string(),
-  "updatedAt": zod.string()
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
 })
 export const ListCrematoriResponse = zod.array(ListCrematoriResponseItem)
 
@@ -256,8 +256,8 @@ export const CreateCrematorioResponse = zod.object({
   "modalitaPrenotazione": zod.string().nullish(),
   "documentiRichiesti": zod.string().nullish(),
   "note": zod.string().nullish(),
-  "createdAt": zod.string(),
-  "updatedAt": zod.string()
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
 })
 
 
@@ -282,8 +282,8 @@ export const GetCrematorioResponse = zod.object({
   "modalitaPrenotazione": zod.string().nullish(),
   "documentiRichiesti": zod.string().nullish(),
   "note": zod.string().nullish(),
-  "createdAt": zod.string(),
-  "updatedAt": zod.string()
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
 })
 
 
@@ -326,8 +326,8 @@ export const UpdateCrematorioResponse = zod.object({
   "modalitaPrenotazione": zod.string().nullish(),
   "documentiRichiesti": zod.string().nullish(),
   "note": zod.string().nullish(),
-  "createdAt": zod.string(),
-  "updatedAt": zod.string()
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
 })
 
 
@@ -359,8 +359,8 @@ export const ListNazioniResponseItem = zod.object({
   "procedureRimpatrio": zod.string().nullish(),
   "costiOrienttativi": zod.string().nullish(),
   "note": zod.string().nullish(),
-  "createdAt": zod.string(),
-  "updatedAt": zod.string()
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
 })
 export const ListNazioniResponse = zod.array(ListNazioniResponseItem)
 
@@ -394,8 +394,8 @@ export const CreateNazioneResponse = zod.object({
   "procedureRimpatrio": zod.string().nullish(),
   "costiOrienttativi": zod.string().nullish(),
   "note": zod.string().nullish(),
-  "createdAt": zod.string(),
-  "updatedAt": zod.string()
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
 })
 
 
@@ -417,8 +417,8 @@ export const GetNazioneResponse = zod.object({
   "procedureRimpatrio": zod.string().nullish(),
   "costiOrienttativi": zod.string().nullish(),
   "note": zod.string().nullish(),
-  "createdAt": zod.string(),
-  "updatedAt": zod.string()
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
 })
 
 
@@ -455,8 +455,8 @@ export const UpdateNazioneResponse = zod.object({
   "procedureRimpatrio": zod.string().nullish(),
   "costiOrienttativi": zod.string().nullish(),
   "note": zod.string().nullish(),
-  "createdAt": zod.string(),
-  "updatedAt": zod.string()
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
 })
 
 
@@ -486,8 +486,8 @@ export const ListModuliResponseItem = zod.object({
   "entityId": zod.number().nullish(),
   "url": zod.string().nullish(),
   "note": zod.string().nullish(),
-  "createdAt": zod.string(),
-  "updatedAt": zod.string()
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
 })
 export const ListModuliResponse = zod.array(ListModuliResponseItem)
 
@@ -515,8 +515,8 @@ export const CreateModuloResponse = zod.object({
   "entityId": zod.number().nullish(),
   "url": zod.string().nullish(),
   "note": zod.string().nullish(),
-  "createdAt": zod.string(),
-  "updatedAt": zod.string()
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
 })
 
 
@@ -535,8 +535,8 @@ export const GetModuloResponse = zod.object({
   "entityId": zod.number().nullish(),
   "url": zod.string().nullish(),
   "note": zod.string().nullish(),
-  "createdAt": zod.string(),
-  "updatedAt": zod.string()
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
 })
 
 
@@ -567,8 +567,8 @@ export const UpdateModuloResponse = zod.object({
   "entityId": zod.number().nullish(),
   "url": zod.string().nullish(),
   "note": zod.string().nullish(),
-  "createdAt": zod.string(),
-  "updatedAt": zod.string()
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
 })
 
 

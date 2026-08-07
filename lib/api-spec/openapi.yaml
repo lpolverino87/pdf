@@ -494,8 +494,8 @@ components:
         appuntamentoAttoMorte: { type: ["string", "null"] }
         moduli: { type: ["string", "null"] }
         noteCostiPagamento: { type: ["string", "null"] }
-        createdAt: { type: string }
-        updatedAt: { type: string }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
 
     ComuneInput:
       type: object
@@ -557,8 +557,8 @@ components:
         modalitaPrenotazione: { type: ["string", "null"] }
         documentiRichiesti: { type: ["string", "null"] }
         note: { type: ["string", "null"] }
-        createdAt: { type: string }
-        updatedAt: { type: string }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
 
     CrematorioInput:
       type: object
@@ -607,8 +607,8 @@ components:
         procedureRimpatrio: { type: ["string", "null"] }
         costiOrienttativi: { type: ["string", "null"] }
         note: { type: ["string", "null"] }
-        createdAt: { type: string }
-        updatedAt: { type: string }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
 
     NazioneInput:
       type: object
@@ -648,8 +648,8 @@ components:
         entityId: { type: ["number", "null"] }
         url: { type: ["string", "null"] }
         note: { type: ["string", "null"] }
-        createdAt: { type: string }
-        updatedAt: { type: string }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
 
     ModuloInput:
       type: object

@@ -73,12 +73,13 @@ export function ModuloForm() {
 
   const onSubmit = (data: FormData) => {
     // Clean up entityId if generale
-    if (data.entityType === "generale") {
-      data.entityId = null
+    const payload = {
+      ...data,
+      entityId: data.entityType === "generale" ? undefined : data.entityId ?? undefined,
     }
 
     if (isEdit) {
-      updateMutation.mutate({ id: id!, data }, {
+      updateMutation.mutate({ id: id!, data: payload }, {
         onSuccess: (updated) => {
           toast({ title: "Modulo aggiornato" })
           queryClient.invalidateQueries({ queryKey: getListModuliQueryKey() })
@@ -87,7 +88,7 @@ export function ModuloForm() {
         }
       })
     } else {
-      createMutation.mutate({ data }, {
+      createMutation.mutate({ data: payload }, {
         onSuccess: () => {
           toast({ title: "Modulo creato" })
           queryClient.invalidateQueries({ queryKey: getListModuliQueryKey() })
