@@ -25,6 +25,6 @@ export interface Nazione {
   costiOrienttativi?: string | null;
   /** @nullable */
   note?: string | null;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }

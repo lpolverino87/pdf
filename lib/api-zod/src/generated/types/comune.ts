@@ -41,6 +41,6 @@ export interface Comune {
   moduli?: string | null;
   /** @nullable */
   noteCostiPagamento?: string | null;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }

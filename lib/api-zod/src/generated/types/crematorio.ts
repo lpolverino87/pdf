@@ -31,6 +31,6 @@ export interface Crematorio {
   documentiRichiesti?: string | null;
   /** @nullable */
   note?: string | null;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }

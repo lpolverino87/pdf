@@ -1,0 +1,1 @@
+- [Contratti API con date](api-date-contracts.md) — i timestamp PostgreSQL vanno descritti come `date-time` nei contratti OpenAPI generati.

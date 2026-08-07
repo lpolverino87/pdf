@@ -19,6 +19,6 @@ export interface Modulo {
   url?: string | null;
   /** @nullable */
   note?: string | null;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
