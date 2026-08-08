@@ -14,5 +14,9 @@ export interface ModuloUpdate {
   entityType?: ModuloUpdateEntityType;
   entityId?: number;
   url?: string;
+  fileKey?: string;
+  fileName?: string;
+  fileSize?: number;
+  fileMimeType?: string;
   note?: string;
 }

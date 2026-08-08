@@ -443,6 +443,82 @@ paths:
         "204":
           description: Eliminato
 
+  /moduli/{id}/file-upload-url:
+    post:
+      operationId: requestModuloFileUpload
+      tags: [moduli]
+      summary: Richiede un URL firmato per caricare un PDF
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: number }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ModuloFileUploadRequest"
+      responses:
+        "200":
+          description: URL firmato
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ModuloFileUploadResponse"
+
+  /moduli/{id}/file:
+    post:
+      operationId: completeModuloFileUpload
+      tags: [moduli]
+      summary: Salva i metadati del PDF caricato
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: number }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ModuloFileMetadata"
+      responses:
+        "200":
+          description: Modulo aggiornato
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Modulo"
+    get:
+      operationId: getModuloFileUrl
+      tags: [moduli]
+      summary: Genera un URL temporaneo per aprire il PDF
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: number }
+      responses:
+        "200":
+          description: URL temporaneo
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ModuloFileUrlResponse"
+    delete:
+      operationId: deleteModuloFile
+      tags: [moduli]
+      summary: Elimina il PDF del modulo
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: number }
+      responses:
+        "204":
+          description: PDF eliminato
+
   /dashboard/stats:
     get:
       operationId: getDashboardStats
@@ -647,6 +723,10 @@ components:
         entityType: { type: string, enum: [comune, crematorio, nazione, generale] }
         entityId: { type: ["number", "null"] }
         url: { type: ["string", "null"] }
+        fileKey: { type: ["string", "null"] }
+        fileName: { type: ["string", "null"] }
+        fileSize: { type: ["number", "null"] }
+        fileMimeType: { type: ["string", "null"] }
         note: { type: ["string", "null"] }
         createdAt: { type: string, format: date-time }
         updatedAt: { type: string, format: date-time }
@@ -660,6 +740,10 @@ components:
         entityType: { type: string, enum: [comune, crematorio, nazione, generale] }
         entityId: { type: number }
         url: { type: string }
+        fileKey: { type: string }
+        fileName: { type: string }
+        fileSize: { type: number }
+        fileMimeType: { type: string }
         note: { type: string }
 
     ModuloUpdate:
@@ -670,7 +754,41 @@ components:
         entityType: { type: string, enum: [comune, crematorio, nazione, generale] }
         entityId: { type: number }
         url: { type: string }
+        fileKey: { type: string }
+        fileName: { type: string }
+        fileSize: { type: number }
+        fileMimeType: { type: string }
         note: { type: string }
+
+    ModuloFileUploadRequest:
+      type: object
+      required: [fileName, fileSize, fileMimeType]
+      properties:
+        fileName: { type: string, minLength: 1 }
+        fileSize: { type: number, minimum: 1, maximum: 20971520 }
+        fileMimeType: { type: string, enum: [application/pdf] }
+
+    ModuloFileUploadResponse:
+      type: object
+      required: [uploadUrl, fileKey]
+      properties:
+        uploadUrl: { type: string }
+        fileKey: { type: string }
+
+    ModuloFileMetadata:
+      type: object
+      required: [fileKey, fileName, fileSize, fileMimeType]
+      properties:
+        fileKey: { type: string, minLength: 1 }
+        fileName: { type: string, minLength: 1 }
+        fileSize: { type: number, minimum: 1, maximum: 20971520 }
+        fileMimeType: { type: string, enum: [application/pdf] }
+
+    ModuloFileUrlResponse:
+      type: object
+      required: [downloadUrl]
+      properties:
+        downloadUrl: { type: string }
 
     DashboardStats:
       type: object

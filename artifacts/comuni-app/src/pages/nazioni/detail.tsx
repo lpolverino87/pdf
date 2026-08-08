@@ -2,7 +2,8 @@ import { useParams, Link } from "wouter"
 import { useGetNazione, getGetNazioneQueryKey, useListModuli } from "@workspace/api-client-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, Edit2, ExternalLink } from "lucide-react"
+import { ArrowLeft, Edit2 } from "lucide-react"
+import { ModuloFileLink } from "@/components/modulo-file-link"
 
 export function NazioneDetail() {
   const params = useParams()
@@ -105,11 +106,13 @@ export function NazioneDetail() {
                       <h5 className="font-semibold text-foreground">{mod.nome}</h5>
                       {mod.descrizione && <p className="text-xs text-muted-foreground mt-1">{mod.descrizione}</p>}
                     </div>
-                    {mod.url && (
-                      <a href={mod.url} target="_blank" rel="noreferrer" className="text-primary p-2 hover:bg-primary/10 rounded-md">
-                        <ExternalLink className="h-4 w-4" />
-                      </a>
-                    )}
+                    <ModuloFileLink
+                      moduloId={mod.id}
+                      fileKey={mod.fileKey}
+                      fileName={mod.fileName}
+                      legacyUrl={mod.url}
+                      compact
+                    />
                   </div>
                 ))}
               </div>

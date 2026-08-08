@@ -5,10 +5,11 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { 
   useCreateModulo, useUpdateModulo, useGetModulo, getGetModuloQueryKey, getListModuliQueryKey,
-  ModuloInputEntityType, useListComuni, useListCrematori, useListNazioni
+  ModuloInputEntityType, useListComuni, useListCrematori, useListNazioni,
+  useRequestModuloFileUpload, useCompleteModuloFileUpload, useDeleteModuloFile,
 } from "@workspace/api-client-react"
 import { useQueryClient } from "@tanstack/react-query"
-import { ArrowLeft, Save } from "lucide-react"
+import { ArrowLeft, FileText, Save, Trash2, Upload } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -35,6 +36,8 @@ export function ModuloForm() {
   const [, setLocation] = useLocation()
   const { toast } = useToast()
   const queryClient = useQueryClient()
+  const [pdfFile, setPdfFile] = useState<File | null>(null)
+  const [removeExistingPdf, setRemoveExistingPdf] = useState(false)
 
   const { data: item, isLoading: isLoadingData } = useGetModulo(id!, {
     query: { enabled: isEdit, queryKey: getGetModuloQueryKey(id!) }
@@ -47,6 +50,9 @@ export function ModuloForm() {
 
   const createMutation = useCreateModulo()
   const updateMutation = useUpdateModulo()
+  const requestUploadMutation = useRequestModuloFileUpload()
+  const completeUploadMutation = useCompleteModuloFileUpload()
+  const deleteFileMutation = useDeleteModuloFile()
 
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -71,36 +77,72 @@ export function ModuloForm() {
     }
   }, [item, form])
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = async (data: FormData) => {
     // Clean up entityId if generale
     const payload = {
       ...data,
       entityId: data.entityType === "generale" ? undefined : data.entityId ?? undefined,
     }
 
-    if (isEdit) {
-      updateMutation.mutate({ id: id!, data: payload }, {
-        onSuccess: (updated) => {
-          toast({ title: "Modulo aggiornato" })
-          queryClient.invalidateQueries({ queryKey: getListModuliQueryKey() })
-          queryClient.invalidateQueries({ queryKey: getGetModuloQueryKey(id!) })
-          setLocation(`/moduli`)
+    try {
+      const saved = isEdit
+        ? await updateMutation.mutateAsync({ id: id!, data: payload })
+        : await createMutation.mutateAsync({ data: payload })
+
+      if (pdfFile) {
+        const upload = await requestUploadMutation.mutateAsync({
+          id: saved.id,
+          data: {
+            fileName: pdfFile.name,
+            fileSize: pdfFile.size,
+            fileMimeType: "application/pdf",
+          },
+        })
+
+        const uploadResponse = await fetch(upload.uploadUrl, {
+          method: "PUT",
+          headers: { "Content-Type": "application/pdf" },
+          body: pdfFile,
+        })
+
+        if (!uploadResponse.ok) {
+          throw new Error("Il caricamento del PDF non è riuscito")
         }
-      })
-    } else {
-      createMutation.mutate({ data: payload }, {
-        onSuccess: () => {
-          toast({ title: "Modulo creato" })
-          queryClient.invalidateQueries({ queryKey: getListModuliQueryKey() })
-          setLocation(`/moduli`)
-        }
+
+        await completeUploadMutation.mutateAsync({
+          id: saved.id,
+          data: {
+            fileKey: upload.fileKey,
+            fileName: pdfFile.name,
+            fileSize: pdfFile.size,
+            fileMimeType: "application/pdf",
+          },
+        })
+      } else if (isEdit && removeExistingPdf && item?.fileKey) {
+        await deleteFileMutation.mutateAsync({ id: saved.id })
+      }
+
+      toast({ title: isEdit ? "Modulo aggiornato" : "Modulo creato" })
+      queryClient.invalidateQueries({ queryKey: getListModuliQueryKey() })
+      queryClient.invalidateQueries({ queryKey: getGetModuloQueryKey(saved.id) })
+      setLocation(`/moduli`)
+    } catch (error) {
+      toast({
+        title: "Salvataggio non riuscito",
+        description: error instanceof Error ? error.message : "Controlla i dati e riprova.",
+        variant: "destructive",
       })
     }
   }
 
   if (isEdit && isLoadingData) return <div className="py-12 text-center">Caricamento...</div>
 
-  const isPending = createMutation.isPending || updateMutation.isPending
+  const isPending =
+    createMutation.isPending ||
+    updateMutation.isPending ||
+    requestUploadMutation.isPending ||
+    completeUploadMutation.isPending ||
+    deleteFileMutation.isPending
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
@@ -153,10 +195,76 @@ export function ModuloForm() {
               </select>
             </div>
 
-            <div className="space-y-2 md:col-span-2">
-              <Label htmlFor="url">URL File / Documento</Label>
-              <Input id="url" type="url" placeholder="https://" {...form.register("url")} />
-              {form.formState.errors.url && <p className="text-xs text-destructive">{form.formState.errors.url.message}</p>}
+            <div className="space-y-3 md:col-span-2 rounded-lg border border-dashed border-border bg-muted/20 p-4">
+              <div>
+                <Label htmlFor="pdf">Documento PDF</Label>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Carica il documento direttamente nell’archivio. Massimo 20 MB.
+                </p>
+              </div>
+              {item?.fileKey && !removeExistingPdf && !pdfFile && (
+                <div className="flex items-center justify-between rounded-md border bg-background px-3 py-2">
+                  <div className="flex min-w-0 items-center gap-2">
+                    <FileText className="h-4 w-4 shrink-0 text-primary" />
+                    <span className="truncate text-sm">{item.fileName || "PDF già caricato"}</span>
+                  </div>
+                  <button
+                    type="button"
+                    className="text-xs text-destructive hover:underline"
+                    onClick={() => setRemoveExistingPdf(true)}
+                  >
+                    Rimuovi
+                  </button>
+                </div>
+              )}
+              {removeExistingPdf && !pdfFile && (
+                <p className="text-sm text-destructive">
+                  Il PDF esistente verrà eliminato quando salvi il modulo.
+                </p>
+              )}
+              {pdfFile && (
+                <div className="flex items-center justify-between rounded-md border bg-background px-3 py-2">
+                  <div className="flex min-w-0 items-center gap-2">
+                    <FileText className="h-4 w-4 shrink-0 text-primary" />
+                    <span className="truncate text-sm">{pdfFile.name}</span>
+                  </div>
+                  <button
+                    type="button"
+                    className="text-xs text-muted-foreground hover:text-foreground"
+                    onClick={() => setPdfFile(null)}
+                  >
+                    Cambia
+                  </button>
+                </div>
+              )}
+              {!pdfFile && (
+                <label className="inline-flex cursor-pointer items-center gap-2 text-sm font-medium text-primary hover:underline">
+                  <Upload className="h-4 w-4" />
+                  {item?.fileKey && !removeExistingPdf ? "Sostituisci PDF" : "Scegli PDF"}
+                  <input
+                    id="pdf"
+                    type="file"
+                    accept="application/pdf,.pdf"
+                    className="sr-only"
+                    onChange={(event) => {
+                      const file = event.target.files?.[0]
+                      if (!file) return
+                      if (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf")) {
+                        toast({ title: "Seleziona un file PDF", variant: "destructive" })
+                        event.currentTarget.value = ""
+                        return
+                      }
+                      if (file.size > 20 * 1024 * 1024) {
+                        toast({ title: "Il PDF supera il limite di 20 MB", variant: "destructive" })
+                        event.currentTarget.value = ""
+                        return
+                      }
+                      setRemoveExistingPdf(false)
+                      setPdfFile(file)
+                    }}
+                  />
+                </label>
+              )}
             </div>
 
             <div className="space-y-2 md:col-span-2">

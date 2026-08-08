@@ -225,6 +225,14 @@ export interface Modulo {
   /** @nullable */
   url?: string | null;
   /** @nullable */
+  fileKey?: string | null;
+  /** @nullable */
+  fileName?: string | null;
+  /** @nullable */
+  fileSize?: number | null;
+  /** @nullable */
+  fileMimeType?: string | null;
+  /** @nullable */
   note?: string | null;
   createdAt: string;
   updatedAt: string;
@@ -247,6 +255,10 @@ export interface ModuloInput {
   entityType: ModuloInputEntityType;
   entityId?: number;
   url?: string;
+  fileKey?: string;
+  fileName?: string;
+  fileSize?: number;
+  fileMimeType?: string;
   note?: string;
 }
 
@@ -267,7 +279,58 @@ export interface ModuloUpdate {
   entityType?: ModuloUpdateEntityType;
   entityId?: number;
   url?: string;
+  fileKey?: string;
+  fileName?: string;
+  fileSize?: number;
+  fileMimeType?: string;
   note?: string;
+}
+
+export type ModuloFileUploadRequestFileMimeType = typeof ModuloFileUploadRequestFileMimeType[keyof typeof ModuloFileUploadRequestFileMimeType];
+
+
+export const ModuloFileUploadRequestFileMimeType = {
+  'application/pdf': 'application/pdf',
+} as const;
+
+export interface ModuloFileUploadRequest {
+  /** @minLength 1 */
+  fileName: string;
+  /**
+     * @minimum 1
+     * @maximum 20971520
+     */
+  fileSize: number;
+  fileMimeType: ModuloFileUploadRequestFileMimeType;
+}
+
+export interface ModuloFileUploadResponse {
+  uploadUrl: string;
+  fileKey: string;
+}
+
+export type ModuloFileMetadataFileMimeType = typeof ModuloFileMetadataFileMimeType[keyof typeof ModuloFileMetadataFileMimeType];
+
+
+export const ModuloFileMetadataFileMimeType = {
+  'application/pdf': 'application/pdf',
+} as const;
+
+export interface ModuloFileMetadata {
+  /** @minLength 1 */
+  fileKey: string;
+  /** @minLength 1 */
+  fileName: string;
+  /**
+     * @minimum 1
+     * @maximum 20971520
+     */
+  fileSize: number;
+  fileMimeType: ModuloFileMetadataFileMimeType;
+}
+
+export interface ModuloFileUrlResponse {
+  downloadUrl: string;
 }
 
 export interface DashboardStats {

@@ -18,6 +18,14 @@ export interface Modulo {
   /** @nullable */
   url?: string | null;
   /** @nullable */
+  fileKey?: string | null;
+  /** @nullable */
+  fileName?: string | null;
+  /** @nullable */
+  fileSize?: number | null;
+  /** @nullable */
+  fileMimeType?: string | null;
+  /** @nullable */
   note?: string | null;
   createdAt: Date;
   updatedAt: Date;
