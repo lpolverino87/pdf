@@ -4,6 +4,7 @@ import comuniRouter from "./comuni";
 import creratoriRouter from "./crematori";
 import nazioniRouter from "./nazioni";
 import moduliRouter from "./moduli";
+import moduliFilesRouter from "./moduli-files";
 import dashboardRouter from "./dashboard";
 
 const router: IRouter = Router();
@@ -13,6 +14,7 @@ router.use(comuniRouter);
 router.use(creratoriRouter);
 router.use(nazioniRouter);
 router.use(moduliRouter);
+router.use(moduliFilesRouter);
 router.use(dashboardRouter);
 
 export default router;

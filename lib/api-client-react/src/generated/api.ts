@@ -34,6 +34,10 @@ import type {
   ListModuliParams,
   ListNazioniParams,
   Modulo,
+  ModuloFileMetadata,
+  ModuloFileUploadRequest,
+  ModuloFileUploadResponse,
+  ModuloFileUrlResponse,
   ModuloInput,
   ModuloUpdate,
   Nazione,
@@ -1643,6 +1647,298 @@ export const useDeleteModulo = <TError = ErrorType<unknown>,
         TContext
       > => {
       return useMutation(getDeleteModuloMutationOptions(options));
+    }
+
+export const getRequestModuloFileUploadUrl = (id: number,) => {
+
+
+
+
+  return `/api/moduli/${id}/file-upload-url`
+}
+
+/**
+ * @summary Richiede un URL firmato per caricare un PDF
+ */
+export const requestModuloFileUpload = async (id: number,
+    moduloFileUploadRequest: ModuloFileUploadRequest, options?: Parameters<typeof customFetch>[1]): Promise<ModuloFileUploadResponse> => {
+
+  return customFetch<ModuloFileUploadResponse>(getRequestModuloFileUploadUrl(id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(moduloFileUploadRequest)
+  }
+);}
+
+
+
+
+
+export const getRequestModuloFileUploadMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof requestModuloFileUpload>>, TError,{id: number;data: BodyType<ModuloFileUploadRequest>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof requestModuloFileUpload>>, TError,{id: number;data: BodyType<ModuloFileUploadRequest>}, TContext> => {
+
+const mutationKey = ['requestModuloFileUpload'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof requestModuloFileUpload>>, {id: number;data: BodyType<ModuloFileUploadRequest>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  requestModuloFileUpload(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RequestModuloFileUploadMutationResult = NonNullable<Awaited<ReturnType<typeof requestModuloFileUpload>>>
+    export type RequestModuloFileUploadMutationBody = BodyType<ModuloFileUploadRequest>
+    export type RequestModuloFileUploadMutationError = ErrorType<unknown>
+
+    /**
+ * @summary Richiede un URL firmato per caricare un PDF
+ */
+export const useRequestModuloFileUpload = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof requestModuloFileUpload>>, TError,{id: number;data: BodyType<ModuloFileUploadRequest>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof requestModuloFileUpload>>,
+        TError,
+        {id: number;data: BodyType<ModuloFileUploadRequest>},
+        TContext
+      > => {
+      return useMutation(getRequestModuloFileUploadMutationOptions(options));
+    }
+
+export const getCompleteModuloFileUploadUrl = (id: number,) => {
+
+
+
+
+  return `/api/moduli/${id}/file`
+}
+
+/**
+ * @summary Salva i metadati del PDF caricato
+ */
+export const completeModuloFileUpload = async (id: number,
+    moduloFileMetadata: ModuloFileMetadata, options?: Parameters<typeof customFetch>[1]): Promise<Modulo> => {
+
+  return customFetch<Modulo>(getCompleteModuloFileUploadUrl(id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(moduloFileMetadata)
+  }
+);}
+
+
+
+
+
+export const getCompleteModuloFileUploadMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof completeModuloFileUpload>>, TError,{id: number;data: BodyType<ModuloFileMetadata>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof completeModuloFileUpload>>, TError,{id: number;data: BodyType<ModuloFileMetadata>}, TContext> => {
+
+const mutationKey = ['completeModuloFileUpload'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof completeModuloFileUpload>>, {id: number;data: BodyType<ModuloFileMetadata>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  completeModuloFileUpload(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CompleteModuloFileUploadMutationResult = NonNullable<Awaited<ReturnType<typeof completeModuloFileUpload>>>
+    export type CompleteModuloFileUploadMutationBody = BodyType<ModuloFileMetadata>
+    export type CompleteModuloFileUploadMutationError = ErrorType<unknown>
+
+    /**
+ * @summary Salva i metadati del PDF caricato
+ */
+export const useCompleteModuloFileUpload = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof completeModuloFileUpload>>, TError,{id: number;data: BodyType<ModuloFileMetadata>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof completeModuloFileUpload>>,
+        TError,
+        {id: number;data: BodyType<ModuloFileMetadata>},
+        TContext
+      > => {
+      return useMutation(getCompleteModuloFileUploadMutationOptions(options));
+    }
+
+export const getGetModuloFileUrlUrl = (id: number,) => {
+
+
+
+
+  return `/api/moduli/${id}/file`
+}
+
+/**
+ * @summary Genera un URL temporaneo per aprire il PDF
+ */
+export const getModuloFileUrl = async (id: number, options?: Parameters<typeof customFetch>[1]): Promise<ModuloFileUrlResponse> => {
+
+  return customFetch<ModuloFileUrlResponse>(getGetModuloFileUrlUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetModuloFileUrlQueryKey = (id: number,) => {
+    return [
+    `/api/moduli/${id}/file`
+    ] as const;
+    }
+
+
+export const getGetModuloFileUrlQueryOptions = <TData = Awaited<ReturnType<typeof getModuloFileUrl>>, TError = ErrorType<unknown>>(id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getModuloFileUrl>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetModuloFileUrlQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getModuloFileUrl>>> = ({ signal }) => getModuloFileUrl(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getModuloFileUrl>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetModuloFileUrlQueryResult = NonNullable<Awaited<ReturnType<typeof getModuloFileUrl>>>
+export type GetModuloFileUrlQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Genera un URL temporaneo per aprire il PDF
+ */
+
+export function useGetModuloFileUrl<TData = Awaited<ReturnType<typeof getModuloFileUrl>>, TError = ErrorType<unknown>>(
+ id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getModuloFileUrl>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetModuloFileUrlQueryOptions(id,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getDeleteModuloFileUrl = (id: number,) => {
+
+
+
+
+  return `/api/moduli/${id}/file`
+}
+
+/**
+ * @summary Elimina il PDF del modulo
+ */
+export const deleteModuloFile = async (id: number, options?: Parameters<typeof customFetch>[1]): Promise<void> => {
+
+  return customFetch<void>(getDeleteModuloFileUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getDeleteModuloFileMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteModuloFile>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteModuloFile>>, TError,{id: number}, TContext> => {
+
+const mutationKey = ['deleteModuloFile'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteModuloFile>>, {id: number}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteModuloFile(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteModuloFileMutationResult = NonNullable<Awaited<ReturnType<typeof deleteModuloFile>>>
+
+    export type DeleteModuloFileMutationError = ErrorType<unknown>
+
+    /**
+ * @summary Elimina il PDF del modulo
+ */
+export const useDeleteModuloFile = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteModuloFile>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteModuloFile>>,
+        TError,
+        {id: number},
+        TContext
+      > => {
+      return useMutation(getDeleteModuloFileMutationOptions(options));
     }
 
 export const getGetDashboardStatsUrl = () => {

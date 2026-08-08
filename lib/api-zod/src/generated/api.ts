@@ -485,6 +485,10 @@ export const ListModuliResponseItem = zod.object({
   "entityType": zod.enum(['comune', 'crematorio', 'nazione', 'generale']),
   "entityId": zod.number().nullish(),
   "url": zod.string().nullish(),
+  "fileKey": zod.string().nullish(),
+  "fileName": zod.string().nullish(),
+  "fileSize": zod.number().nullish(),
+  "fileMimeType": zod.string().nullish(),
   "note": zod.string().nullish(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date()
@@ -504,6 +508,10 @@ export const CreateModuloBody = zod.object({
   "entityType": zod.enum(['comune', 'crematorio', 'nazione', 'generale']),
   "entityId": zod.number().optional(),
   "url": zod.string().optional(),
+  "fileKey": zod.string().optional(),
+  "fileName": zod.string().optional(),
+  "fileSize": zod.number().optional(),
+  "fileMimeType": zod.string().optional(),
   "note": zod.string().optional()
 })
 
@@ -514,6 +522,10 @@ export const CreateModuloResponse = zod.object({
   "entityType": zod.enum(['comune', 'crematorio', 'nazione', 'generale']),
   "entityId": zod.number().nullish(),
   "url": zod.string().nullish(),
+  "fileKey": zod.string().nullish(),
+  "fileName": zod.string().nullish(),
+  "fileSize": zod.number().nullish(),
+  "fileMimeType": zod.string().nullish(),
   "note": zod.string().nullish(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date()
@@ -534,6 +546,10 @@ export const GetModuloResponse = zod.object({
   "entityType": zod.enum(['comune', 'crematorio', 'nazione', 'generale']),
   "entityId": zod.number().nullish(),
   "url": zod.string().nullish(),
+  "fileKey": zod.string().nullish(),
+  "fileName": zod.string().nullish(),
+  "fileSize": zod.number().nullish(),
+  "fileMimeType": zod.string().nullish(),
   "note": zod.string().nullish(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date()
@@ -556,6 +572,10 @@ export const UpdateModuloBody = zod.object({
   "entityType": zod.enum(['comune', 'crematorio', 'nazione', 'generale']).optional(),
   "entityId": zod.number().optional(),
   "url": zod.string().optional(),
+  "fileKey": zod.string().optional(),
+  "fileName": zod.string().optional(),
+  "fileSize": zod.number().optional(),
+  "fileMimeType": zod.string().optional(),
   "note": zod.string().optional()
 })
 
@@ -566,6 +586,10 @@ export const UpdateModuloResponse = zod.object({
   "entityType": zod.enum(['comune', 'crematorio', 'nazione', 'generale']),
   "entityId": zod.number().nullish(),
   "url": zod.string().nullish(),
+  "fileKey": zod.string().nullish(),
+  "fileName": zod.string().nullish(),
+  "fileSize": zod.number().nullish(),
+  "fileMimeType": zod.string().nullish(),
   "note": zod.string().nullish(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date()
@@ -580,6 +604,89 @@ export const DeleteModuloParams = zod.object({
 })
 
 export const DeleteModuloResponse = zod.void()
+
+
+/**
+ * @summary Richiede un URL firmato per caricare un PDF
+ */
+export const RequestModuloFileUploadParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+
+export const requestModuloFileUploadBodyFileSizeMax = 20971520;
+
+
+
+export const RequestModuloFileUploadBody = zod.object({
+  "fileName": zod.string().min(1),
+  "fileSize": zod.number().min(1).max(requestModuloFileUploadBodyFileSizeMax),
+  "fileMimeType": zod.enum(['application/pdf'])
+})
+
+export const RequestModuloFileUploadResponse = zod.object({
+  "uploadUrl": zod.string(),
+  "fileKey": zod.string()
+})
+
+
+/**
+ * @summary Salva i metadati del PDF caricato
+ */
+export const CompleteModuloFileUploadParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+
+
+export const completeModuloFileUploadBodyFileSizeMax = 20971520;
+
+
+
+export const CompleteModuloFileUploadBody = zod.object({
+  "fileKey": zod.string().min(1),
+  "fileName": zod.string().min(1),
+  "fileSize": zod.number().min(1).max(completeModuloFileUploadBodyFileSizeMax),
+  "fileMimeType": zod.enum(['application/pdf'])
+})
+
+export const CompleteModuloFileUploadResponse = zod.object({
+  "id": zod.number(),
+  "nome": zod.string(),
+  "descrizione": zod.string().nullish(),
+  "entityType": zod.enum(['comune', 'crematorio', 'nazione', 'generale']),
+  "entityId": zod.number().nullish(),
+  "url": zod.string().nullish(),
+  "fileKey": zod.string().nullish(),
+  "fileName": zod.string().nullish(),
+  "fileSize": zod.number().nullish(),
+  "fileMimeType": zod.string().nullish(),
+  "note": zod.string().nullish(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Genera un URL temporaneo per aprire il PDF
+ */
+export const GetModuloFileUrlParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const GetModuloFileUrlResponse = zod.object({
+  "downloadUrl": zod.string()
+})
+
+
+/**
+ * @summary Elimina il PDF del modulo
+ */
+export const DeleteModuloFileParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const DeleteModuloFileResponse = zod.void()
 
 
 /**

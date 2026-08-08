@@ -13,6 +13,7 @@ import {
   UpdateModuloResponse,
   DeleteModuloParams,
 } from "@workspace/api-zod";
+import { deleteModuloFileFromR2 } from "../lib/r2";
 
 const router: IRouter = Router();
 
@@ -115,6 +116,10 @@ router.delete("/moduli/:id", async (req, res): Promise<void> => {
   if (!modulo) {
     res.status(404).json({ error: "Modulo non trovato" });
     return;
+  }
+
+  if (modulo.fileKey) {
+    await deleteModuloFileFromR2(modulo.fileKey);
   }
 
   res.sendStatus(204);

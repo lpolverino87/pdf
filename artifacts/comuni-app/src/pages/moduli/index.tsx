@@ -5,11 +5,12 @@ import {
   useListComuni, useListCrematori, useListNazioni 
 } from "@workspace/api-client-react"
 import { useQueryClient } from "@tanstack/react-query"
-import { Plus, Edit2, Trash2, ExternalLink } from "lucide-react"
+import { Plus, Edit2, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/hooks/use-toast"
+import { ModuloFileLink } from "@/components/modulo-file-link"
 
 export function ModuliList() {
   const [filterType, setFilterType] = useState<string>("")
@@ -97,7 +98,7 @@ export function ModuliList() {
           <TableHeader>
             <TableRow>
               <TableHead>Nome e URL</TableHead>
-              <TableHead>Collegamento</TableHead>
+              <TableHead>Documento</TableHead>
               <TableHead>Descrizione</TableHead>
               <TableHead className="text-right">Azioni</TableHead>
             </TableRow>
@@ -108,14 +109,12 @@ export function ModuliList() {
               return (
                 <TableRow key={item.id}>
                   <TableCell className="font-medium text-foreground">
-                    <div className="flex items-center gap-2">
-                      {item.nome}
-                      {item.url && (
-                        <a href={item.url} target="_blank" rel="noreferrer" className="text-primary hover:text-primary/80" title="Apri Modulo">
-                          <ExternalLink className="h-4 w-4" />
-                        </a>
-                      )}
-                    </div>
+                    {item.nome}
+                    {item.url && !item.fileKey && (
+                      <span className="mt-1 block text-xs font-normal text-muted-foreground">
+                        Collegamento esterno
+                      </span>
+                    )}
                   </TableCell>
                   <TableCell>
                     <div className="flex flex-col gap-1 items-start">
@@ -127,6 +126,14 @@ export function ModuliList() {
                   </TableCell>
                   <TableCell className="max-w-xs truncate">
                     {item.descrizione || "-"}
+                  </TableCell>
+                  <TableCell>
+                    <ModuloFileLink
+                      moduloId={item.id}
+                      fileKey={item.fileKey}
+                      fileName={item.fileName}
+                      legacyUrl={item.url}
+                    />
                   </TableCell>
                   <TableCell className="text-right space-x-2">
                     <Link href={`/moduli/${item.id}/edit`}>

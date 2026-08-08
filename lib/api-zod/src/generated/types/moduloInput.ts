@@ -14,5 +14,9 @@ export interface ModuloInput {
   entityType: ModuloInputEntityType;
   entityId?: number;
   url?: string;
+  fileKey?: string;
+  fileName?: string;
+  fileSize?: number;
+  fileMimeType?: string;
   note?: string;
 }
