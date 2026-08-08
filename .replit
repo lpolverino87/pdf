@@ -21,3 +21,9 @@ timeoutMs = 20000
 
 [nix]
 channel = "stable-25_05"
+
+[userenv]
+
+[userenv.shared]
+R2_ACCOUNT_ID = "7f6e9f20d0d4fa1f718f328f6a291bca"
+R2_BUCKET_NAME = "pdfcroceverde"
