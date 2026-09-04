@@ -15,10 +15,15 @@ La configurazione `vercel.json` pubblica il frontend come sito statico e inoltra
 Configurare in Vercel, senza inserirle nel repository:
 
 - `DATABASE_URL`: connection string del database Neon, con `sslmode=require`
+- `NEON_DATABASE_URL`: alias opzionale per usare Neon durante la transizione su
+  Replit, dove `DATABASE_URL` è gestita automaticamente
 - `R2_ACCOUNT_ID`
 - `R2_ACCESS_KEY_ID`
 - `R2_SECRET_ACCESS_KEY`
 - `R2_BUCKET_NAME`
+
+Quando sono presenti entrambe, `NEON_DATABASE_URL` ha precedenza su
+`DATABASE_URL`. In Vercel è sufficiente usare `DATABASE_URL`.
 
 `PORT` e `BASE_PATH` servono solo per l’esecuzione locale/Replit; il frontend
 usa `/` come base predefinita quando Vercel non li fornisce.
