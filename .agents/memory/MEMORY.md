@@ -1,1 +1,2 @@
 - [Contratti API con date](api-date-contracts.md) — i timestamp PostgreSQL vanno descritti come `date-time` nei contratti OpenAPI generati.
+- [Transizione PostgreSQL esterno](external-postgres-transition.md) — durante il passaggio da Replit a Neon, usare un alias separato perché `DATABASE_URL` è gestita dalla piattaforma.
