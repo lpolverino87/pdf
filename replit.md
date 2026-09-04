@@ -58,6 +58,8 @@ moduli/documenti per un’impresa di onoranze funebri.
 
 - Dopo ogni modifica a `lib/api-spec/openapi.yaml` rigenerare gli artefatti
   client/Zod con il codegen OpenAPI.
+- Il client PostgreSQL imposta `search_path=public` all’apertura di ogni
+  connessione, perché alcuni ruoli Neon possono avere un `search_path` vuoto.
 - In Replit i workflow forniscono `PORT` e `BASE_PATH`; Vite ora usa valori
   predefiniti per consentire il build su Vercel.
 

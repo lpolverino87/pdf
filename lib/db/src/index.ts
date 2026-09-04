@@ -12,7 +12,12 @@ if (!databaseUrl) {
   );
 }
 
-export const pool = new Pool({ connectionString: databaseUrl });
+export const pool = new Pool({
+  connectionString: databaseUrl,
+  onConnect: async (client) => {
+    await client.query("SET search_path TO public");
+  },
+});
 export const db = drizzle(pool, { schema });
 
 export * from "./schema";
