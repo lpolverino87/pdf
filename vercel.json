@@ -1,20 +1,42 @@
 {
-  "installCommand": "pnpm install --frozen-lockfile",
-  "buildCommand": "pnpm --filter @workspace/comuni-app run build",
-  "outputDirectory": "artifacts/comuni-app/dist/public",
+  "version": 2,
   "functions": {
     "api/index.ts": {
       "maxDuration": 30
+    },
+    "api/[...path].ts": {
+      "maxDuration": 30
     }
   },
-  "rewrites": [
+  "builds": [
     {
-      "source": "/api/:path*",
-      "destination": "/api"
+      "src": "api/index.ts",
+      "use": "@vercel/node"
     },
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "src": "api/[...path].ts",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "artifacts/comuni-app/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "buildCommand": "pnpm --filter @workspace/comuni-app run build",
+        "distDir": "dist/public"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "api/[...path].ts"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ]
 }
