@@ -9,7 +9,7 @@ L’applicazione è composta da:
 
 La configurazione `vercel.json` usa i builder Vercel per pubblicare il frontend
 come sito statico e inoltra `/api/*` alla function Node catch-all
-`api/[...path].ts`, che riusa l’app Express esistente. Nel progetto Vercel
+`api/[...path].mjs`, che riusa l’app Express già compilata. Nel progetto Vercel
 lasciare vuoto il campo **Root Directory**, così il monorepo viene letto dalla
 radice.
 
