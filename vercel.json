@@ -6,7 +6,10 @@
       "use": "@vercel/node",
       "config": {
         "maxDuration": 30,
-        "includeFiles": ["artifacts/api-server/dist/**"]
+        "includeFiles": [
+          "artifacts/api-server/dist/**",
+          "artifacts/comuni-app/dist/public/**"
+        ]
       }
     },
     {
@@ -14,7 +17,10 @@
       "use": "@vercel/node",
       "config": {
         "maxDuration": 30,
-        "includeFiles": ["artifacts/api-server/dist/**"]
+        "includeFiles": [
+          "artifacts/api-server/dist/**",
+          "artifacts/comuni-app/dist/public/**"
+        ]
       }
     },
     {
@@ -28,15 +34,8 @@
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "api/[...path].mjs"
-    },
-    {
-      "handle": "filesystem"
-    },
-    {
       "src": "/(.*)",
-      "dest": "/index.html"
+      "dest": "api/[...path].mjs"
     }
   ]
 }
