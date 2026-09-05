@@ -1,27 +1,29 @@
 {
   "version": 2,
   "functions": {
-    "api/index.ts": {
-      "maxDuration": 30
+    "api/index.mjs": {
+      "maxDuration": 30,
+      "includeFiles": ["artifacts/api-server/dist/**"]
     },
-    "api/[...path].ts": {
-      "maxDuration": 30
+    "api/[...path].mjs": {
+      "maxDuration": 30,
+      "includeFiles": ["artifacts/api-server/dist/**"]
     }
   },
   "builds": [
     {
-      "src": "api/index.ts",
+      "src": "api/index.mjs",
       "use": "@vercel/node"
     },
     {
-      "src": "api/[...path].ts",
+      "src": "api/[...path].mjs",
       "use": "@vercel/node"
     },
     {
       "src": "artifacts/comuni-app/package.json",
       "use": "@vercel/static-build",
       "config": {
-        "buildCommand": "pnpm --filter @workspace/comuni-app run build",
+        "buildCommand": "pnpm --filter @workspace/comuni-app run build && pnpm --filter @workspace/api-server run build",
         "distDir": "dist/public"
       }
     }
@@ -29,7 +31,7 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "api/[...path].ts"
+      "dest": "api/[...path].mjs"
     },
     {
       "handle": "filesystem"
