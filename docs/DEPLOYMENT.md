@@ -7,8 +7,11 @@ L’applicazione è composta da:
 - PostgreSQL tramite Drizzle
 - PDF su Cloudflare R2 tramite URL firmati S3
 
-La configurazione `vercel.json` pubblica il frontend come sito statico e inoltra
-`/api/*` alla function `api/index.ts`, che riusa l’app Express esistente.
+La configurazione `vercel.json` usa i builder Vercel per pubblicare il frontend
+come sito statico e inoltra `/api/*` alla function Node catch-all
+`api/[...path].mjs`, che riusa l’app Express già compilata. Nel progetto Vercel
+lasciare vuoto il campo **Root Directory**, così il monorepo viene letto dalla
+radice.
 
 ## Variabili d’ambiente
 
