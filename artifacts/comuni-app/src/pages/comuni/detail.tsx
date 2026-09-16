@@ -122,6 +122,7 @@ export function ComuneDetail() {
                       fileKey={mod.fileKey}
                       fileName={mod.fileName}
                       legacyUrl={mod.url}
+                      compact
                     />
                   </div>
                 ))}
