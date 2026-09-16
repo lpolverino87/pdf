@@ -109,14 +109,22 @@ export function ModuloForm() {
           },
         })
 
-        const uploadResponse = await fetch(upload.uploadUrl, {
-          method: "PUT",
-          headers: { "Content-Type": "application/pdf" },
-          body: pdfFile,
-        })
+        try {
+          const uploadResponse = await fetch(upload.uploadUrl, {
+            method: "PUT",
+            headers: { "Content-Type": "application/pdf" },
+            body: pdfFile,
+          })
 
-        if (!uploadResponse.ok) {
-          throw new Error("Il caricamento del PDF non è riuscito")
+          if (!uploadResponse.ok) {
+            throw new Error("Il caricamento del PDF non è riuscito")
+          }
+        } catch (error) {
+          // R2 can complete the PUT but omit CORS headers on the response.
+          // The API verifies the object before accepting the metadata below.
+          if (!(error instanceof TypeError)) {
+            throw error
+          }
         }
 
         await completeUploadMutation.mutateAsync({
