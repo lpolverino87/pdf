@@ -2,7 +2,8 @@ import { useParams, Link } from "wouter"
 import { useGetComune, getGetComuneQueryKey, useListModuli } from "@workspace/api-client-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, Edit2, ExternalLink } from "lucide-react"
+import { ArrowLeft, Edit2, Plus } from "lucide-react"
+import { ModuloFileLink } from "@/components/modulo-file-link"
 
 export function ComuneDetail() {
   const params = useParams()
@@ -40,11 +41,18 @@ export function ComuneDetail() {
             {comune.provincia && <p className="text-muted-foreground font-medium">{comune.provincia}</p>}
           </div>
         </div>
-        <Link href={`/comuni/${id}/edit`}>
-          <Button>
-            <Edit2 className="mr-2 h-4 w-4" /> Modifica
-          </Button>
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link href={`/moduli/new?entityType=comune&entityId=${id}`}>
+            <Button variant="outline">
+              <Plus className="mr-2 h-4 w-4" /> Aggiungi modulo
+            </Button>
+          </Link>
+          <Link href={`/comuni/${id}/edit`}>
+            <Button>
+              <Edit2 className="mr-2 h-4 w-4" /> Modifica
+            </Button>
+          </Link>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -91,30 +99,38 @@ export function ComuneDetail() {
           </CardContent>
         </Card>
 
-        {moduli && moduli.length > 0 && (
-          <Card className="md:col-span-2 h-fit">
-            <CardHeader>
-              <CardTitle className="text-lg">Moduli e Documenti Collegati</CardTitle>
-            </CardHeader>
-            <CardContent>
+        <Card className="md:col-span-2 h-fit">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0">
+            <CardTitle className="text-lg">Moduli e Documenti Collegati</CardTitle>
+            <Link href={`/moduli/new?entityType=comune&entityId=${id}`}>
+              <Button variant="outline" size="sm">
+                <Plus className="mr-2 h-4 w-4" /> Aggiungi
+              </Button>
+            </Link>
+          </CardHeader>
+          <CardContent>
+            {moduli && moduli.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {moduli.map(mod => (
-                  <div key={mod.id} className="p-4 border rounded-lg bg-secondary/10 flex items-start justify-between">
-                    <div>
+                  <div key={mod.id} className="p-4 border rounded-lg bg-secondary/10 flex items-start justify-between gap-4">
+                    <div className="min-w-0">
                       <h5 className="font-semibold text-foreground">{mod.nome}</h5>
                       {mod.descrizione && <p className="text-xs text-muted-foreground mt-1">{mod.descrizione}</p>}
                     </div>
-                    {mod.url && (
-                      <a href={mod.url} target="_blank" rel="noreferrer" className="text-primary p-2 hover:bg-primary/10 rounded-md">
-                        <ExternalLink className="h-4 w-4" />
-                      </a>
-                    )}
+                    <ModuloFileLink
+                      moduloId={mod.id}
+                      fileKey={mod.fileKey}
+                      fileName={mod.fileName}
+                      legacyUrl={mod.url}
+                    />
                   </div>
                 ))}
               </div>
-            </CardContent>
-          </Card>
-        )}
+            ) : (
+              <p className="text-sm text-muted-foreground">Nessun modulo o documento collegato a questo comune.</p>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </div>
   )
