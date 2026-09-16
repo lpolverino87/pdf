@@ -15,6 +15,7 @@ import {
   createModuloDownloadUrl,
   createModuloUploadUrl,
   deleteModuloFileFromR2,
+  moduloFileExists,
 } from "../lib/r2";
 
 const router: IRouter = Router();
@@ -73,6 +74,11 @@ router.post("/moduli/:id/file", async (req, res): Promise<void> => {
 
   if (!isModuloFileKey(params.data.id, body.data.fileKey)) {
     res.status(400).json({ error: "Percorso PDF non valido" });
+    return;
+  }
+
+  if (!(await moduloFileExists(body.data.fileKey))) {
+    res.status(400).json({ error: "Il PDF non risulta caricato su R2" });
     return;
   }
 
