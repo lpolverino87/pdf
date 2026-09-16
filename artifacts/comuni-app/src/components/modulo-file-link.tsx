@@ -37,14 +37,26 @@ export function ModuloFileLink({
       return
     }
 
+    const pdfWindow = window.open("about:blank", "_blank")
+    if (!pdfWindow) {
+      toast({
+        title: "Impossibile aprire il PDF",
+        description: "Consenti i popup per questo sito e riprova.",
+        variant: "destructive",
+      })
+      return
+    }
+    pdfWindow.opener = null
+
     setIsOpening(true)
     try {
       const result = await fileQuery.refetch()
       if (!result.data?.downloadUrl) {
         throw new Error("PDF non trovato")
       }
-      window.open(result.data.downloadUrl, "_blank", "noopener,noreferrer")
+      pdfWindow.location.href = result.data.downloadUrl
     } catch (error) {
+      pdfWindow.close()
       toast({
         title: "Impossibile aprire il PDF",
         description: error instanceof Error ? error.message : "Riprova tra poco.",
