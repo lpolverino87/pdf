@@ -1,6 +1,7 @@
 import {
   DeleteObjectCommand,
   GetObjectCommand,
+  HeadObjectCommand,
   PutObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
@@ -72,6 +73,26 @@ export async function createModuloDownloadUrl(fileKey: string) {
     }),
     { expiresIn: 300 },
   );
+}
+
+export async function moduloFileExists(fileKey: string) {
+  const { client, config } = getR2Client();
+
+  try {
+    await client.send(
+      new HeadObjectCommand({
+        Bucket: config.bucketName,
+        Key: fileKey,
+      }),
+    );
+    return true;
+  } catch (error) {
+    const statusCode = (error as { $metadata?: { httpStatusCode?: number } }).$metadata?.httpStatusCode;
+    if (statusCode === 404 || (error as { name?: string }).name === "NotFound") {
+      return false;
+    }
+    throw error;
+  }
 }
 
 export async function deleteModuloFileFromR2(fileKey: string) {
