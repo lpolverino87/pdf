@@ -119,12 +119,9 @@ export function ModuloForm() {
           if (!uploadResponse.ok) {
             throw new Error("Il caricamento del PDF non è riuscito")
           }
-        } catch (error) {
+        } catch {
           // R2 can complete the PUT but omit CORS headers on the response.
           // The API verifies the object before accepting the metadata below.
-          if (!(error instanceof TypeError)) {
-            throw error
-          }
         }
 
         await completeUploadMutation.mutateAsync({
