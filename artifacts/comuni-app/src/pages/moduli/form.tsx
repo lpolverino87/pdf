@@ -38,6 +38,15 @@ export function ModuloForm() {
   const queryClient = useQueryClient()
   const [pdfFile, setPdfFile] = useState<File | null>(null)
   const [removeExistingPdf, setRemoveExistingPdf] = useState(false)
+  const queryParams = new URLSearchParams(window.location.search)
+  const presetEntityType =
+    queryParams.get("entityType") === "comune" ||
+    queryParams.get("entityType") === "crematorio" ||
+    queryParams.get("entityType") === "nazione"
+      ? queryParams.get("entityType") as ModuloInputEntityType
+      : "generale" as ModuloInputEntityType
+  const parsedEntityId = Number(queryParams.get("entityId"))
+  const presetEntityId = Number.isInteger(parsedEntityId) && parsedEntityId > 0 ? parsedEntityId : undefined
 
   const { data: item, isLoading: isLoadingData } = useGetModulo(id!, {
     query: { enabled: isEdit, queryKey: getGetModuloQueryKey(id!) }
@@ -58,7 +67,8 @@ export function ModuloForm() {
     resolver: zodResolver(schema),
     defaultValues: { 
       nome: "",
-      entityType: "generale" as any
+      entityType: presetEntityType,
+      entityId: presetEntityId,
     }
   })
 
