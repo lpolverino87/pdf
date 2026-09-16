@@ -1,14 +1,73 @@
-import { useGetDashboardStats } from "@workspace/api-client-react"
-import { Building2, Flame, Globe2, FileText, ArrowRight } from "lucide-react"
-import { Link } from "wouter"
+import { useGetDashboardStats, useListComuni, useListModuli } from "@workspace/api-client-react"
+import { Building2, Flame, Globe2, FileText, ArrowRight, Search } from "lucide-react"
+import { Link, useLocation } from "wouter"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
+
+function normalizeSearchTerm(value: string) {
+  return value
+    .toLocaleLowerCase("it-IT")
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .trim()
+}
 
 export function Dashboard() {
   const { data: stats, isLoading } = useGetDashboardStats()
+  const { data: comuni } = useListComuni()
+  const { data: moduli } = useListModuli()
   const [search, setSearch] = useState("")
+  const [searchSubmitted, setSearchSubmitted] = useState(false)
+  const [, setLocation] = useLocation()
+
+  const normalizedSearch = normalizeSearchTerm(search)
+  const matchingComuni = useMemo(() => {
+    if (!normalizedSearch) return []
+    return (comuni ?? []).filter((comune) =>
+      normalizeSearchTerm(`${comune.nome} ${comune.provincia ?? ""}`).includes(normalizedSearch),
+    )
+  }, [comuni, normalizedSearch])
+
+  const matchingModuli = useMemo(() => {
+    if (!normalizedSearch) return []
+    return (moduli ?? []).filter((modulo) =>
+      normalizeSearchTerm(`${modulo.nome} ${modulo.descrizione ?? ""} ${modulo.fileName ?? ""}`).includes(normalizedSearch),
+    )
+  }, [moduli, normalizedSearch])
+
+  const navigateToSearchResult = (type: "comune" | "modulo", id: number) => {
+    setSearchSubmitted(false)
+    setSearch("")
+    setLocation(type === "comune" ? `/comuni/${id}` : `/moduli/${id}/edit`)
+  }
+
+  const handleSearch = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    setSearchSubmitted(true)
+
+    const exactComune = matchingComuni.find((comune) => normalizeSearchTerm(comune.nome) === normalizedSearch)
+    if (exactComune) {
+      navigateToSearchResult("comune", exactComune.id)
+      return
+    }
+
+    const exactModulo = matchingModuli.find((modulo) => normalizeSearchTerm(modulo.nome) === normalizedSearch)
+    if (exactModulo) {
+      navigateToSearchResult("modulo", exactModulo.id)
+      return
+    }
+
+    const totalMatches = matchingComuni.length + matchingModuli.length
+    if (totalMatches === 1) {
+      if (matchingComuni.length === 1) {
+        navigateToSearchResult("comune", matchingComuni[0].id)
+      } else {
+        navigateToSearchResult("modulo", matchingModuli[0].id)
+      }
+    }
+  }
 
   const statCards = [
     { label: "Comuni", value: stats?.totalComuni, icon: Building2, href: "/comuni", color: "bg-blue-50 text-blue-700" },
@@ -49,18 +108,65 @@ export function Dashboard() {
           <CardTitle className="text-lg font-serif">Ricerca Rapida</CardTitle>
         </CardHeader>
         <CardContent>
-          <form className="flex gap-2" onSubmit={(e) => { e.preventDefault(); /* Could redirect to a global search, but we just link to comuni search for now */ }}>
-            <Input 
-              placeholder="Cerca un comune, crematorio o nazione..." 
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="max-w-md bg-background"
-            />
-            <Link href={`/comuni?search=${encodeURIComponent(search)}`}>
-              <Button type="button">
-                Cerca in Comuni <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
+          <form className="relative flex gap-2" onSubmit={handleSearch}>
+            <div className="relative max-w-md flex-1">
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Cerca un comune o un modulo..."
+                value={search}
+                onChange={(event) => {
+                  setSearch(event.target.value)
+                  setSearchSubmitted(false)
+                }}
+                className="bg-background pl-9"
+                aria-label="Cerca comuni e moduli"
+              />
+              {normalizedSearch && (matchingComuni.length > 0 || matchingModuli.length > 0) && (
+                <div className="absolute left-0 right-0 top-12 z-20 overflow-hidden rounded-md border bg-card shadow-lg">
+                  {matchingComuni.length > 0 && (
+                    <div className="border-b p-2">
+                      <p className="px-2 pb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Comuni</p>
+                      {matchingComuni.slice(0, 5).map((comune) => (
+                        <button
+                          key={`comune-${comune.id}`}
+                          type="button"
+                          className="flex w-full items-center gap-2 rounded px-2 py-2 text-left text-sm hover:bg-secondary"
+                          onClick={() => navigateToSearchResult("comune", comune.id)}
+                        >
+                          <Building2 className="h-4 w-4 text-primary" />
+                          <span>{comune.nome}</span>
+                          {comune.provincia && <span className="text-xs text-muted-foreground">({comune.provincia})</span>}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  {matchingModuli.length > 0 && (
+                    <div className="p-2">
+                      <p className="px-2 pb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Moduli</p>
+                      {matchingModuli.slice(0, 5).map((modulo) => (
+                        <button
+                          key={`modulo-${modulo.id}`}
+                          type="button"
+                          className="flex w-full items-center gap-2 rounded px-2 py-2 text-left text-sm hover:bg-secondary"
+                          onClick={() => navigateToSearchResult("modulo", modulo.id)}
+                        >
+                          <FileText className="h-4 w-4 text-primary" />
+                          <span>{modulo.nome}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+              {searchSubmitted && normalizedSearch && matchingComuni.length === 0 && matchingModuli.length === 0 && (
+                <p className="absolute left-0 top-12 z-20 rounded-md border bg-card px-3 py-2 text-sm text-muted-foreground shadow-lg">
+                  Nessun comune o modulo trovato.
+                </p>
+              )}
+            </div>
+            <Button type="submit" disabled={!normalizedSearch}>
+              Cerca <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
           </form>
         </CardContent>
       </Card>
